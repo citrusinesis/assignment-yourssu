@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    include: secrets
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/blog_yourssu?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    database: mysql
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
