@@ -16,7 +16,7 @@ class Article(
     @Column(length = 255, nullable = false)
     var title: String,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
 ) : AuditedEntity()
