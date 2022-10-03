@@ -2,10 +2,21 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "2.7.4"
+    id ("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
+    id ("org.jetbrains.kotlin.plugin.noarg") version "1.5.21"
     id("io.spring.dependency-management") version "1.0.14.RELEASE"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
 }
 
 group = "com.citrus"
