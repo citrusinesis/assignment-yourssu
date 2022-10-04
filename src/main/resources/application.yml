@@ -9,6 +9,9 @@ spring:
       ddl-auto: create
     show-sql: true
     database: mysql
+  devtools:
+    livereload:
+      enabled: true
   main:
     allow-bean-definition-overriding: true
 
