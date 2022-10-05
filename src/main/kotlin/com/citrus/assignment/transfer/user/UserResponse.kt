@@ -1,7 +1,6 @@
 package com.citrus.assignment.transfer.user
 
-data class CreateRequest(
+data class UserResponse(
     var email: String,
-    var password: String,
     var username: String,
 )

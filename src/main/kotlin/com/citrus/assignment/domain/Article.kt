@@ -8,7 +8,7 @@ class Article(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_id")
-    val id: Long?,
+    val id: Long? = null,
 
     @Column(length = 255, nullable = false)
     var content: String,

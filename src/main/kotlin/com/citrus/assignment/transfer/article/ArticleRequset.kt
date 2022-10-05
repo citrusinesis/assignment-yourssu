@@ -1,6 +1,6 @@
 package com.citrus.assignment.transfer.article
 
-data class CreateArticle(
+data class ArticleRequset(
     var email: String,
     var password: String,
     var title: String,
