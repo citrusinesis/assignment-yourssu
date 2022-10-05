@@ -4,7 +4,7 @@ import com.citrus.assignment.domain.Article
 import com.citrus.assignment.domain.User
 import com.citrus.assignment.repository.ArticleRepository
 import com.citrus.assignment.repository.UserRepository
-import com.citrus.assignment.transfer.article.ArticleRequset
+import com.citrus.assignment.transfer.article.ArticleRequest
 import com.citrus.assignment.transfer.article.ArticleResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -16,19 +16,22 @@ class ArticleService(
 ) {
     //TODO: Seperate validating logic
     val nullish = setOf("", " ", null)
-    private fun validateUser(email: String, password: String): User {
+
+    fun validateUser(email: String, password: String): User {
         //TODO: Exception Handling
-        val user: User = userRepository.findByEmail(email) ?: throw Exception() // UserNotFound
-        if (user.password != password) throw Exception() // IncorrectPassword
+        val user: User = userRepository.findByEmail(email) ?: throw Exception("User Not Found")
+        if (user.password != password) throw Exception("Incorrect Password")
         return user
     }
 
-    fun create(article: ArticleRequset): ArticleResponse {
+    fun validateArticle(articleId: Long): Article = articleRepository.findById(articleId).get()
+
+    fun create(article: ArticleRequest): ArticleResponse {
         val user: User = validateUser(article.email, article.password)
 
         if (article.title in nullish
             || article.content in nullish
-        ) throw Exception()
+        ) throw Exception("Title or Content cannot be NULLish")
 
         val result: Article = articleRepository.save(
             Article(
@@ -46,13 +49,14 @@ class ArticleService(
         )
     }
 
-    fun modify(articleId: Long, article: ArticleRequset): ArticleResponse {
+    fun modify(articleId: Long, article: ArticleRequest): ArticleResponse {
         val user: User = validateUser(article.email, article.password)
-        articleRepository.findById(articleId).get() // If article not found, raise Exception
+        validateArticle(articleId) // If article not found, raise Exception
 
         if (article.title in nullish
             || article.content in nullish
-        ) throw Exception()
+        ) throw Exception("Title or Content cannot be NULLish")
+        if (user.email != article.email) throw Exception("Article author does not match")
 
         val result: Article = articleRepository.save(
             Article(

@@ -1,9 +1,8 @@
 package com.citrus.assignment.controller
 
 
-import com.citrus.assignment.repository.UserRepository
 import com.citrus.assignment.service.ArticleService
-import com.citrus.assignment.transfer.article.ArticleRequset
+import com.citrus.assignment.transfer.article.ArticleRequest
 import com.citrus.assignment.transfer.article.ArticleResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -12,16 +11,15 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/article")
 class ArticleController(
     @Autowired var articleService: ArticleService,
-    @Autowired var userRepository: UserRepository
 ) {
     @PostMapping("/create")
-    fun create(@RequestBody article: ArticleRequset): ArticleResponse =
+    fun create(@RequestBody article: ArticleRequest): ArticleResponse =
         articleService.create(article)
 
     @PostMapping("/modify/{id}")
     fun modify(
         @PathVariable(name = "id") id: String,
-        @RequestBody article: ArticleRequset,
+        @RequestBody article: ArticleRequest,
     ): ArticleResponse = articleService.modify(id.toLong(), article)
 
     //TODO: Implement delete article

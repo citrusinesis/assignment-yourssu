@@ -1,6 +1,6 @@
 package com.citrus.assignment.transfer
 
-data class DeleteRequest(
+data class Request(
     var email: String,
     var password: String,
 )

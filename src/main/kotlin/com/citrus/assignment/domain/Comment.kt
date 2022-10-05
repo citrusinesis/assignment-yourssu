@@ -8,7 +8,7 @@ class Comment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    var id: Long?,
+    var id: Long? = null,
 
     @Column(length = 255, nullable = false)
     var content: String,
