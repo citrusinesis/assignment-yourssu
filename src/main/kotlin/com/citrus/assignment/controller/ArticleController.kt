@@ -18,12 +18,11 @@ class ArticleController(
     fun create(@RequestBody article: ArticleRequset): ArticleResponse =
         articleService.create(article)
 
-    //TODO: Implement modify article
     @PostMapping("/modify/{id}")
     fun modify(
         @PathVariable(name = "id") id: String,
         @RequestBody article: ArticleRequset,
-    ): String = "$id $article"
+    ): ArticleResponse = articleService.modify(id.toLong(), article)
 
     //TODO: Implement delete article
     @PostMapping("/delete/{id}")

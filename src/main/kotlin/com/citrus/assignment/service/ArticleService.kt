@@ -14,9 +14,8 @@ class ArticleService(
     @Autowired var userRepository: UserRepository,
     @Autowired var articleRepository: ArticleRepository
 ) {
-    val setOfNullish = setOf("", " ", null)
-
     //TODO: Seperate validating logic
+    val nullish = setOf("", " ", null)
     private fun validateUser(email: String, password: String): User {
         //TODO: Exception Handling
         val user: User = userRepository.findByEmail(email) ?: throw Exception() // UserNotFound
@@ -27,8 +26,8 @@ class ArticleService(
     fun create(article: ArticleRequset): ArticleResponse {
         val user: User = validateUser(article.email, article.password)
 
-        if (article.title in setOfNullish
-            || article.content in setOfNullish
+        if (article.title in nullish
+            || article.content in nullish
         ) throw Exception()
 
         val result: Article = articleRepository.save(
@@ -47,10 +46,29 @@ class ArticleService(
         )
     }
 
-    //TODO: Implement Modify Service
-    fun modify(articleId: String, article: ArticleRequset) {
+    fun modify(articleId: Long, article: ArticleRequset): ArticleResponse {
         val user: User = validateUser(article.email, article.password)
+        articleRepository.findById(articleId).get() // If article not found, raise Exception
 
+        if (article.title in nullish
+            || article.content in nullish
+        ) throw Exception()
+
+        val result: Article = articleRepository.save(
+            Article(
+                id = articleId,
+                title = article.title,
+                content = article.content,
+                user = user,
+            )
+        )
+
+        return ArticleResponse(
+            articleId = result.id!!,
+            email = result.user.email,
+            title = result.title,
+            content = result.content
+        )
     }
 
     //TODO: Implement Delete Service
