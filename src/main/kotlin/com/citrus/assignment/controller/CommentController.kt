@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.*
 class CommentController(
     @Autowired var commentService: CommentService
 ) {
-    //TODO: Implement create comment
     @PostMapping("/create/{article_id}")
     fun create(
         @PathVariable(name = "article_id") articleId: String,
         @RequestBody comment: CommentRequest
     ): CommentResponse = commentService.create(articleId.toLong(), comment)
 
-    //TODO: Implement modify comment
     @PostMapping("/modify/{article_id}/{id}")
     fun modify(
         @PathVariable(name = "article_id") articleId: String,

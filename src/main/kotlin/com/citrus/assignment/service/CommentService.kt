@@ -30,7 +30,6 @@ class CommentService(
     fun validateArticle(articleId: Long): Article = articleRepository.findById(articleId).get()
     fun validateComment(commentID: Long): Comment = commentRepository.findById(commentID).get()
 
-    //TODO: Implement Create Service
     fun create(articleId: Long, comment: CommentRequest): CommentResponse {
         val user: User = validateUser(comment.email, comment.password)
         val article: Article = validateArticle(articleId)
@@ -52,7 +51,6 @@ class CommentService(
         )
     }
 
-    //TODO: Implement Modify Service
     fun modify(articleId: Long, commentId: Long, comment: CommentRequest): CommentResponse {
         val user: User = validateUser(comment.email, comment.password)
         val article: Article = validateArticle(articleId)
