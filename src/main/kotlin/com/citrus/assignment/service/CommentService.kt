@@ -6,9 +6,11 @@ import com.citrus.assignment.domain.User
 import com.citrus.assignment.repository.ArticleRepository
 import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
+import com.citrus.assignment.transfer.DeleteRequest
 import com.citrus.assignment.transfer.comment.CommentRequest
 import com.citrus.assignment.transfer.comment.CommentResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -74,7 +76,15 @@ class CommentService(
             content = result.content
         )
     }
+    
+    fun delete(articleId: Long, commentId: Long, userInfo: DeleteRequest): HttpStatus {
+        val user: User = validateUser(userInfo.email, userInfo.password)
+        validateArticle(articleId)
+        val comment: Comment = validateComment(commentId)
 
-    //TODO: Implement Delete Service
-    fun delete() {}
+        if (user.email != comment.user.email) throw Exception("Comment author does not match")
+
+        commentRepository.deleteById(commentId)
+        return HttpStatus.OK
+    }
 }

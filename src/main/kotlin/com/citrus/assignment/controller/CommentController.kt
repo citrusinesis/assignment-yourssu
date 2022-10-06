@@ -1,9 +1,11 @@
 package com.citrus.assignment.controller
 
 import com.citrus.assignment.service.CommentService
+import com.citrus.assignment.transfer.DeleteRequest
 import com.citrus.assignment.transfer.comment.CommentRequest
 import com.citrus.assignment.transfer.comment.CommentResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -24,10 +26,10 @@ class CommentController(
         @RequestBody comment: CommentRequest
     ): CommentResponse = commentService.modify(articleId.toLong(), id.toLong(), comment)
 
-    //TODO: Implement delete comment
     @PostMapping("/delete/{article_id}/{id}")
     fun delete(
         @PathVariable(name = "article_id") articleId: String,
-        @PathVariable(name = "id") id: String
-    ): String = "DELETE: $id"
+        @PathVariable(name = "id") id: String,
+        @RequestBody userInfo: DeleteRequest
+    ): HttpStatus = commentService.delete(articleId.toLong(), id.toLong(), userInfo)
 }
