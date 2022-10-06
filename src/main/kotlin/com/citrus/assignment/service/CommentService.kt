@@ -76,7 +76,7 @@ class CommentService(
             content = result.content
         )
     }
-    
+
     fun delete(articleId: Long, commentId: Long, userInfo: DeleteRequest): HttpStatus {
         val user: User = validateUser(userInfo.email, userInfo.password)
         validateArticle(articleId)
@@ -84,7 +84,8 @@ class CommentService(
 
         if (user.email != comment.user.email) throw Exception("Comment author does not match")
 
-        commentRepository.deleteById(commentId)
+        commentRepository.delete(comment)
+        
         return HttpStatus.OK
     }
 }
