@@ -28,7 +28,6 @@ class GlobalService(
     }
 
     protected fun validateUser(email: String, password: String): User {
-        //TODO: Exception Handling
         val user: User = user.findByEmail(email) ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
         if (user.password != password) throw CustomException(ErrorCode.LOGIN_FAIL)
         return user
