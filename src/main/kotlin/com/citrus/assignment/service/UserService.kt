@@ -16,23 +16,15 @@ class UserService(
     @Autowired var userRepository: UserRepository,
     @Autowired var articleRepository: ArticleRepository,
     @Autowired var commentRepository: CommentRepository
-) {
-    fun validateUser(email: String, password: String): User {
-        //TODO: Exception Handling
-        val user: User = userRepository.findByEmail(email) ?: throw Exception("User Not Found")
-        if (user.password != password) throw Exception("Incorrect Password")
-        return user
-    }
-
-    fun create(user: UserRequest): UserResponse {
-        if (userRepository.findByEmail(user.email) != null) throw Exception("Email has already used")
-        if (userRepository.findByUsername(user.username) != null) throw Exception("Username has already taken")
+) : GlobalService(userRepository, articleRepository, commentRepository) {
+    fun create(userRequest: UserRequest): UserResponse {
+        validateDuplication(userRequest)
 
         val result: User = userRepository.save(
             User(
-                email = user.email,
-                password = user.password,
-                username = user.username
+                email = userRequest.email,
+                password = userRequest.password,
+                username = userRequest.username
             )
         )
 

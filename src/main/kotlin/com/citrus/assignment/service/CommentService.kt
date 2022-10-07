@@ -18,29 +18,15 @@ class CommentService(
     @Autowired var userRepository: UserRepository,
     @Autowired var articleRepository: ArticleRepository,
     @Autowired var commentRepository: CommentRepository
-) {
-    //TODO: Seperate validating logic
-    val nullish = setOf("", " ", null)
-
-    fun validateUser(email: String, password: String): User {
-        //TODO: Exception Handling
-        val user: User = userRepository.findByEmail(email) ?: throw Exception("User Not Found")
-        if (user.password != password) throw Exception("Incorrect Password")
-        return user
-    }
-
-    fun validateArticle(articleId: Long): Article = articleRepository.findById(articleId).get()
-    fun validateComment(commentID: Long): Comment = commentRepository.findById(commentID).get()
-
-    fun create(articleId: Long, comment: CommentRequest): CommentResponse {
-        val user: User = validateUser(comment.email, comment.password)
+) : GlobalService(userRepository, articleRepository, commentRepository) {
+    fun create(articleId: Long, commentRequest: CommentRequest): CommentResponse {
+        val user: User = validateUser(commentRequest.email, commentRequest.password)
         val article: Article = validateArticle(articleId)
-
-        if (comment.content in nullish) throw Exception("Content cannot be NULLish")
+        validateNullish(commentRequest.content)
 
         val result: Comment = commentRepository.save(
             Comment(
-                content = comment.content,
+                content = commentRequest.content,
                 article = article,
                 user = user
             )
@@ -53,13 +39,12 @@ class CommentService(
         )
     }
 
-    fun modify(articleId: Long, commentId: Long, comment: CommentRequest): CommentResponse {
-        val user: User = validateUser(comment.email, comment.password)
+    fun modify(articleId: Long, commentId: Long, commentRequest: CommentRequest): CommentResponse {
+        val user: User = validateUser(commentRequest.email, commentRequest.password)
         val article: Article = validateArticle(articleId)
-        validateComment(commentId)
-
-        if (comment.content in nullish) throw Exception("Content cannot be NULLish")
-        if (user.email != comment.email) throw Exception("Comment author does not match")
+        val comment: Comment = validateComment(commentId)
+        validateNullish(comment.content)
+        validateAuthor(user.email, comment.user.email)
 
         val result: Comment = commentRepository.save(
             Comment(
@@ -81,11 +66,10 @@ class CommentService(
         val user: User = validateUser(userInfo.email, userInfo.password)
         validateArticle(articleId)
         val comment: Comment = validateComment(commentId)
-
-        if (user.email != comment.user.email) throw Exception("Comment author does not match")
+        validateAuthor(user.email, comment.user.email)
 
         commentRepository.delete(comment)
-        
+
         return HttpStatus.OK
     }
 }

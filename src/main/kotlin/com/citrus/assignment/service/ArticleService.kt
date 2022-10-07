@@ -17,30 +17,15 @@ class ArticleService(
     @Autowired var userRepository: UserRepository,
     @Autowired var articleRepository: ArticleRepository,
     @Autowired var commentRepository: CommentRepository
-) {
-    //TODO: Seperate validating logic
-    val nullish = setOf("", " ", null)
-
-    fun validateUser(email: String, password: String): User {
-        //TODO: Exception Handling
-        val user: User = userRepository.findByEmail(email) ?: throw Exception("User Not Found")
-        if (user.password != password) throw Exception("Incorrect Password")
-        return user
-    }
-
-    fun validateArticle(articleId: Long): Article = articleRepository.findById(articleId).get()
-
-    fun create(article: ArticleRequest): ArticleResponse {
-        val user: User = validateUser(article.email, article.password)
-
-        if (article.title in nullish
-            || article.content in nullish
-        ) throw Exception("Title or Content cannot be NULLish")
+) : GlobalService(userRepository, articleRepository, commentRepository) {
+    fun create(articleRequest: ArticleRequest): ArticleResponse {
+        val user: User = validateUser(articleRequest.email, articleRequest.password)
+        validateNullish(articleRequest.title, articleRequest.content)
 
         val result: Article = articleRepository.save(
             Article(
-                title = article.title,
-                content = article.content,
+                title = articleRequest.title,
+                content = articleRequest.content,
                 user = user,
             )
         )
@@ -53,14 +38,11 @@ class ArticleService(
         )
     }
 
-    fun modify(articleId: Long, article: ArticleRequest): ArticleResponse {
-        val user: User = validateUser(article.email, article.password)
-        validateArticle(articleId) // If article not found, raise Exception
-
-        if (article.title in nullish
-            || article.content in nullish
-        ) throw Exception("Title or Content cannot be NULLish")
-        if (user.email != article.email) throw Exception("Article author does not match")
+    fun modify(articleId: Long, articleRequest: ArticleRequest): ArticleResponse {
+        val user: User = validateUser(articleRequest.email, articleRequest.password)
+        val article: Article = validateArticle(articleId)
+        validateNullish(articleRequest.title, articleRequest.content)
+        validateAuthor(user.email, article.user.email)
 
         val result: Article = articleRepository.save(
             Article(
@@ -82,8 +64,7 @@ class ArticleService(
     fun delete(articleId: Long, userInfo: DeleteRequest): HttpStatus {
         val user: User = validateUser(userInfo.email, userInfo.password)
         val article: Article = validateArticle(articleId)
-
-        if (user.email != article.user.email) throw Exception("Article author does not match")
+        validateAuthor(user.email, article.user.email)
 
         commentRepository.deleteAll(commentRepository.findAllByArticle(article))
         articleRepository.delete(article)
