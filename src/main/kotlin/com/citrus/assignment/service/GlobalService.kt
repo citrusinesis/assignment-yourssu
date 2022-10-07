@@ -10,6 +10,7 @@ import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
 import com.citrus.assignment.transfer.user.UserRequest
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class GlobalService(
@@ -18,6 +19,8 @@ class GlobalService(
     var comment: CommentRepository
 ) {
     private val nullish = setOf("", " ", null)
+
+    private fun <T : Any> Optional<T>.toNullable(): T? = this.orElse(null)
 
     protected fun validateDuplication(userRequest: UserRequest) {
         if (user.findByEmail(userRequest.email) != null) throw CustomException(ErrorCode.DUPLICATED_EMAIL_ADDRESS)
@@ -31,9 +34,13 @@ class GlobalService(
         return user
     }
 
-    protected fun validateArticle(articleId: Long): Article = article.findById(articleId).get()
+    protected fun validateArticle(articleId: Long): Article =
+        article.findById(articleId).toNullable()
+            ?: throw CustomException(ErrorCode.ARTICLE_NOT_FOUND)
 
-    protected fun validateComment(commentID: Long): Comment = comment.findById(commentID).get()
+    protected fun validateComment(commentId: Long): Comment =
+        comment.findById(commentId).toNullable()
+            ?: throw CustomException(ErrorCode.COMMENT_NOT_FOUND)
 
     protected fun validateNullish(vararg target: String) = target.map {
         if (it in nullish)
