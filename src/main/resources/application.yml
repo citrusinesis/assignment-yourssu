@@ -2,16 +2,13 @@ spring:
   profiles:
     include: secrets
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/blog_yourssu?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://${MYSQL_HOST}:3306/${SCHEME}?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
     database: mysql
-  devtools:
-    livereload:
-      enabled: true
   main:
     allow-bean-definition-overriding: true
 
