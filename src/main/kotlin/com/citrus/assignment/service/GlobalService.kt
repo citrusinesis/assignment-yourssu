@@ -29,7 +29,13 @@ class GlobalService(
         if (user.findByUsername(userRequest.username) != null) throw CustomException(ErrorCode.DUPLICATED_USERNAME)
     }
 
+    protected fun validateEmail(email: String) {
+        val emailRegex = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+        if (!emailRegex.matches(email)) throw CustomException(ErrorCode.EMAIL_WRONG_FORMAT)
+    }
+
     protected fun validateUser(email: String, password: String): User {
+        validateEmail(email)
         val user: User = user.findByEmail(email) ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
         if (!encoder?.matches(password, user.password)!!) throw CustomException(ErrorCode.LOGIN_FAIL)
         return user

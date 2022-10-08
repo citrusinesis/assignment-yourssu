@@ -20,9 +20,8 @@ class UserService(
     @Autowired var passwordEncoder: PasswordEncoder
 ) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
     fun create(userRequest: UserRequest): UserResponse {
+        validateEmail(userRequest.email)
         validateDuplication(userRequest)
-
-        println(passwordEncoder.encode(userRequest.password))
 
         val result: User = userRepository.save(
             User(
