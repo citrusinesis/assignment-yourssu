@@ -9,6 +9,7 @@ import com.citrus.assignment.repository.ArticleRepository
 import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
 import com.citrus.assignment.transfer.user.UserRequest
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -16,7 +17,8 @@ import java.util.*
 class GlobalService(
     var user: UserRepository,
     var article: ArticleRepository,
-    var comment: CommentRepository
+    var comment: CommentRepository,
+    var encoder: PasswordEncoder? = null
 ) {
     private val nullish = setOf("", " ", null)
 
@@ -29,7 +31,7 @@ class GlobalService(
 
     protected fun validateUser(email: String, password: String): User {
         val user: User = user.findByEmail(email) ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
-        if (user.password != password) throw CustomException(ErrorCode.LOGIN_FAIL)
+        if (!encoder?.matches(password, user.password)!!) throw CustomException(ErrorCode.LOGIN_FAIL)
         return user
     }
 

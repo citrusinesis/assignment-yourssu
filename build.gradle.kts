@@ -33,7 +33,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.boot:spring-boot-devtools:2.7.3")
+    implementation("org.springframework.boot:spring-boot-devtools:2.7.4")
+    implementation("org.springframework.security:spring-security-web:5.7.3")
+    implementation("org.springframework.security:spring-security-config:5.7.3")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
