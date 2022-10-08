@@ -54,7 +54,7 @@ class GlobalService(
             throw CustomException(ErrorCode.FIELD_CANNOT_BE_NULL)
     }
 
-    protected fun validateAuthor(requestUser: String, owner: String) {
-        if (requestUser != owner) throw CustomException(ErrorCode.USER_NOT_MATCH)
+    protected fun validateAuthor(requestUser: User, owner: User) {
+        if (requestUser.id != owner.id) throw CustomException(ErrorCode.USER_NOT_MATCH)
     }
 }

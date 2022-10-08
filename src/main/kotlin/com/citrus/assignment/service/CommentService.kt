@@ -44,7 +44,7 @@ class CommentService(
         val article: Article = validateArticle(articleId)
         val comment: Comment = validateComment(commentId)
         validateNullish(comment.content)
-        validateAuthor(user.email, comment.user.email)
+        validateAuthor(user, comment.user)
 
         val result: Comment = commentRepository.save(
             Comment(
@@ -66,7 +66,7 @@ class CommentService(
         val user: User = validateUser(userInfo.email, userInfo.password)
         validateArticle(articleId)
         val comment: Comment = validateComment(commentId)
-        validateAuthor(user.email, comment.user.email)
+        validateAuthor(user, comment.user)
 
         commentRepository.delete(comment)
 

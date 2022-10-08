@@ -42,7 +42,7 @@ class ArticleService(
         val user: User = validateUser(articleRequest.email, articleRequest.password)
         val article: Article = validateArticle(articleId)
         validateNullish(articleRequest.title, articleRequest.content)
-        validateAuthor(user.email, article.user.email)
+        validateAuthor(user, article.user)
 
         val result: Article = articleRepository.save(
             Article(
@@ -64,7 +64,7 @@ class ArticleService(
     fun delete(articleId: Long, userInfo: DeleteRequest): HttpStatus {
         val user: User = validateUser(userInfo.email, userInfo.password)
         val article: Article = validateArticle(articleId)
-        validateAuthor(user.email, article.user.email)
+        validateAuthor(user, article.user)
 
         commentRepository.deleteAll(commentRepository.findAllByArticle(article))
         articleRepository.delete(article)
