@@ -45,13 +45,13 @@ class CommentService(
         val user: User = validateUser(commentRequest)
         val article: Article = validateArticle(articleId)
         val comment: Comment = validateComment(commentId)
-        validateNullish(comment.content)
+        validateNullish(commentRequest.content)
         validateAuthor(user, comment.user)
 
         val result: Comment = commentRepository.save(
             Comment(
                 id = commentId,
-                content = comment.content,
+                content = commentRequest.content,
                 article = article,
                 user = user
             )

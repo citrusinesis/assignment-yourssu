@@ -49,8 +49,8 @@ class ArticleService(
         val result: Article = articleRepository.save(
             Article(
                 id = articleId,
-                title = article.title,
-                content = article.content,
+                title = articleRequest.title,
+                content = articleRequest.content,
                 user = user,
             )
         )
