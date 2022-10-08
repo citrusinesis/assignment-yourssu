@@ -1,8 +1,10 @@
 package com.citrus.assignment.transfer.article
 
+import com.citrus.assignment.transfer.Request
+
 data class ArticleRequest(
-    var email: String,
-    var password: String,
+    override var email: String,
+    override var password: String,
     var title: String,
     var content: String,
-)
+) : Request(email, password)

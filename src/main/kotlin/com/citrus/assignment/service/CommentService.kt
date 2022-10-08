@@ -20,7 +20,7 @@ class CommentService(
     @Autowired var commentRepository: CommentRepository
 ) : GlobalService(userRepository, articleRepository, commentRepository) {
     fun create(articleId: Long, commentRequest: CommentRequest): CommentResponse {
-        val user: User = validateUser(commentRequest.email, commentRequest.password)
+        val user: User = validateUser(commentRequest)
         val article: Article = validateArticle(articleId)
         validateNullish(commentRequest.content)
 
@@ -40,7 +40,7 @@ class CommentService(
     }
 
     fun modify(articleId: Long, commentId: Long, commentRequest: CommentRequest): CommentResponse {
-        val user: User = validateUser(commentRequest.email, commentRequest.password)
+        val user: User = validateUser(commentRequest)
         val article: Article = validateArticle(articleId)
         val comment: Comment = validateComment(commentId)
         validateNullish(comment.content)
@@ -63,7 +63,7 @@ class CommentService(
     }
 
     fun delete(articleId: Long, commentId: Long, userInfo: DeleteRequest): HttpStatus {
-        val user: User = validateUser(userInfo.email, userInfo.password)
+        val user: User = validateUser(userInfo)
         validateArticle(articleId)
         val comment: Comment = validateComment(commentId)
         validateAuthor(user, comment.user)

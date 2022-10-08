@@ -38,7 +38,7 @@ class UserService(
     }
 
     fun delete(userInfo: DeleteRequest): HttpStatus {
-        val user: User = validateUser(userInfo.email, userInfo.password)
+        val user: User = validateUser(userInfo)
 
         commentRepository.deleteAll(commentRepository.findAllByUser(user))
         articleRepository.deleteAll(articleRepository.findAllByUser(user))

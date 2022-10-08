@@ -1,7 +1,9 @@
 package com.citrus.assignment.transfer.comment
 
+import com.citrus.assignment.transfer.Response
+
 data class CommentResponse(
     var commentId: Long,
-    var email: String,
+    override var email: String,
     var content: String,
-)
+) : Response(commentId, email)

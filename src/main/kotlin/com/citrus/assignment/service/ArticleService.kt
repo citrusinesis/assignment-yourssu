@@ -19,7 +19,7 @@ class ArticleService(
     @Autowired var commentRepository: CommentRepository
 ) : GlobalService(userRepository, articleRepository, commentRepository) {
     fun create(articleRequest: ArticleRequest): ArticleResponse {
-        val user: User = validateUser(articleRequest.email, articleRequest.password)
+        val user: User = validateUser(articleRequest)
         validateNullish(articleRequest.title, articleRequest.content)
 
         val result: Article = articleRepository.save(
@@ -39,7 +39,7 @@ class ArticleService(
     }
 
     fun modify(articleId: Long, articleRequest: ArticleRequest): ArticleResponse {
-        val user: User = validateUser(articleRequest.email, articleRequest.password)
+        val user: User = validateUser(articleRequest)
         val article: Article = validateArticle(articleId)
         validateNullish(articleRequest.title, articleRequest.content)
         validateAuthor(user, article.user)
@@ -62,7 +62,7 @@ class ArticleService(
     }
 
     fun delete(articleId: Long, userInfo: DeleteRequest): HttpStatus {
-        val user: User = validateUser(userInfo.email, userInfo.password)
+        val user: User = validateUser(userInfo)
         val article: Article = validateArticle(articleId)
         validateAuthor(user, article.user)
 

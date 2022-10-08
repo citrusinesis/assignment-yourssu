@@ -8,6 +8,7 @@ import com.citrus.assignment.exception.ErrorCode
 import com.citrus.assignment.repository.ArticleRepository
 import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
+import com.citrus.assignment.transfer.Request
 import com.citrus.assignment.transfer.user.UserRequest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -34,10 +35,10 @@ class GlobalService(
         if (!emailRegex.matches(email)) throw CustomException(ErrorCode.EMAIL_WRONG_FORMAT)
     }
 
-    protected fun validateUser(email: String, password: String): User {
-        validateEmail(email)
-        val user: User = user.findByEmail(email) ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
-        if (!encoder?.matches(password, user.password)!!) throw CustomException(ErrorCode.LOGIN_FAIL)
+    protected fun validateUser(request: Request): User {
+        validateEmail(request.email)
+        val user: User = user.findByEmail(request.email) ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
+        if (!encoder?.matches(request.password, user.password)!!) throw CustomException(ErrorCode.LOGIN_FAIL)
         return user
     }
 
