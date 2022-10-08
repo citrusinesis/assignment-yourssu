@@ -11,14 +11,16 @@ import com.citrus.assignment.transfer.comment.CommentRequest
 import com.citrus.assignment.transfer.comment.CommentResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class CommentService(
     @Autowired var userRepository: UserRepository,
     @Autowired var articleRepository: ArticleRepository,
-    @Autowired var commentRepository: CommentRepository
-) : GlobalService(userRepository, articleRepository, commentRepository) {
+    @Autowired var commentRepository: CommentRepository,
+    @Autowired var passwordEncoder: PasswordEncoder
+) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
     fun create(articleId: Long, commentRequest: CommentRequest): CommentResponse {
         val user: User = validateUser(commentRequest)
         val article: Article = validateArticle(articleId)

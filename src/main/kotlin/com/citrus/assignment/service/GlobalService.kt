@@ -19,7 +19,7 @@ class GlobalService(
     var user: UserRepository,
     var article: ArticleRepository,
     var comment: CommentRepository,
-    var encoder: PasswordEncoder? = null
+    var encoder: PasswordEncoder
 ) {
     private val nullish = setOf("", " ", null)
 
@@ -38,7 +38,7 @@ class GlobalService(
     protected fun validateUser(request: Request): User {
         validateEmail(request.email)
         val user: User = user.findByEmail(request.email) ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
-        if (!encoder?.matches(request.password, user.password)!!) throw CustomException(ErrorCode.LOGIN_FAIL)
+        if (!encoder.matches(request.password, user.password)) throw CustomException(ErrorCode.LOGIN_FAIL)
         return user
     }
 

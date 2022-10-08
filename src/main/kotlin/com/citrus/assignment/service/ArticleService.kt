@@ -10,14 +10,16 @@ import com.citrus.assignment.transfer.article.ArticleRequest
 import com.citrus.assignment.transfer.article.ArticleResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class ArticleService(
     @Autowired var userRepository: UserRepository,
     @Autowired var articleRepository: ArticleRepository,
-    @Autowired var commentRepository: CommentRepository
-) : GlobalService(userRepository, articleRepository, commentRepository) {
+    @Autowired var commentRepository: CommentRepository,
+    @Autowired var passwordEncoder: PasswordEncoder
+) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
     fun create(articleRequest: ArticleRequest): ArticleResponse {
         val user: User = validateUser(articleRequest)
         validateNullish(articleRequest.title, articleRequest.content)
