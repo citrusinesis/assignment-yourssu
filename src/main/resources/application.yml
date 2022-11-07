@@ -1,4 +1,6 @@
 spring:
+  jwt:
+    secret: SECRETSSECRETSSECRETSSECRETSSECRETS
   profiles:
     include: secrets
   datasource:

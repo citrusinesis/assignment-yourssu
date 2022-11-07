@@ -4,6 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "user")
+
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,4 +19,11 @@ class User(
 
     @Column(length = 255, nullable = false)
     var username: String,
+
+    @Column(length = 255, nullable = false, name = "refresh_token")
+    var refreshToken: String,
+
+    @Column(length = 255, nullable = false)
+    @Enumerated(EnumType.STRING)
+    var role: Role,
 ) : AuditedEntity()
