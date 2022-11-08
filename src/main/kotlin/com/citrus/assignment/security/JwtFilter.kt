@@ -1,7 +1,6 @@
 package com.citrus.assignment.security
 
 
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -18,12 +17,12 @@ class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
     ) {
         val token: String = request.getHeader("Authorization").substring("Bearer ".length)
 
-        if (jwtUtils.validation(token)) {
-            val username = jwtUtils.parseUsername(token)
-            val authentication: Authentication = jwtUtils.getAuthentication(username)
-            SecurityContextHolder.getContext().authentication = authentication
-        }
+        if (jwtUtils.validation(token))
+            SecurityContextHolder.getContext().authentication =
+                jwtUtils.getAuthentication(jwtUtils.getUsernameFromToken(token))
+
         filterChain.doFilter(request, response)
     }
 
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean = "/user" == request.requestURI
 }
