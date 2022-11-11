@@ -1,10 +1,8 @@
 package com.citrus.assignment.security
 
-import com.citrus.assignment.exception.CustomException
-import com.citrus.assignment.exception.ErrorCode
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.DecodedJWT
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -17,70 +15,35 @@ class JwtUtils(
     private val userDetailsService: UserDetailsServiceImpl,
     @Value("\${spring.jwt.secret}") private val secret: String,
 ) {
-    val experationTime: Long = 1000L * 60
+    val expirationTime: Long = 1000L * 60
 
-    private fun getAllClaims(token: String): Claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).body
+    fun generateAccessToken(id: String, claims: Map<String, Any> = mapOf()): String = "Bearer " + JWT.create()
+        .withJWTId(id)
+        .withPayload(claims)
+        .withExpiresAt(Date(System.currentTimeMillis() + expirationTime))
+        .withIssuedAt(Date(System.currentTimeMillis()))
+        .sign(Algorithm.HMAC256(secret))
 
-    fun <T> getClaimFromToken(token: String, claimesResolver: (Claims) -> T): T =
-        claimesResolver.invoke(getAllClaims(token))
+    fun generateRefreshToken(id: String): String = "Bearer " + JWT.create()
+        .withJWTId(id)
+        .withExpiresAt(Date(System.currentTimeMillis() + expirationTime))
+        .withIssuedAt(Date(System.currentTimeMillis()))
+        .sign(Algorithm.HMAC256(secret))
 
-    fun getUsernameFromToken(token: String): String = getClaimFromToken(token, Claims::getId)
-
-    fun getExperationDateFromToken(token: String): Date = getClaimFromToken(token, Claims::getExpiration)
-
-    fun generateAccessToken(id: String): String = generateAccessToken(id, mapOf())
-
-    fun generateAccessToken(id: String, claims: Map<String, Any>): String = doGenerateAccessToken(id, claims)
-
-    private fun doGenerateAccessToken(id: String, claims: Map<String, Any>): String =
-        Jwts.builder()
-            .setClaims(claims)
-            .setId(id)
-            .setExpiration(Date(System.currentTimeMillis() + experationTime))
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .signWith(SignatureAlgorithm.HS256, secret)
-            .compact()
-
-    fun generateRefreshToken(id: String): String = doGenerateRefreshToken(id)
-
-    private fun doGenerateRefreshToken(id: String): String =
-        Jwts.builder()
-            .setId(id)
-            .setExpiration(Date(System.currentTimeMillis() + experationTime * 5))
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .signWith(SignatureAlgorithm.HS256, secret)
-            .compact()
-
-    fun generateTokenSet(id: String): TokenSet = generateTokenSet(id, mapOf())
-
-    fun generateTokenSet(id: String, claims: Map<String, Any>): TokenSet = doGenerateTokenSet(id, claims)
-
-    private fun doGenerateTokenSet(id: String, claims: Map<String, Any>): TokenSet = mapOf(
-        "accessToken" to Jwts.builder()
-            .setClaims(claims)
-            .setId(id)
-            .setExpiration(Date(System.currentTimeMillis() + experationTime))
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .signWith(SignatureAlgorithm.HS256, secret)
-            .compact(),
-
-        "refreshToken" to Jwts.builder()
-            .setId(id)
-            .setExpiration(Date(System.currentTimeMillis() + experationTime * 5))
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .signWith(SignatureAlgorithm.HS256, secret)
-            .compact(),
+    fun generateTokenSet(id: String, claims: Map<String, Any> = mapOf()): TokenSet = mutableMapOf(
+        "accessToken" to generateAccessToken(id, claims),
+        "refreshToken" to generateRefreshToken(id),
     )
 
-    fun validation(token: String): Boolean = try {
-        Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
-        true
-    } catch (error: Exception) {
-        throw CustomException(ErrorCode.INVALID_TOKEN)
-    }
+    private fun verification(token: String): DecodedJWT = JWT.require(Algorithm.HMAC256(secret))
+            .acceptExpiresAt(expirationTime)
+            .build()
+            .verify(token)
 
-    fun getAuthentication(email: String): Authentication {
-        val userDetails: UserDetails = userDetailsService.loadUserByUsername(email)
+
+    fun getAuthentication(tokenString: String): Authentication {
+        val token: DecodedJWT = verification(tokenString)
+        val userDetails: UserDetails = userDetailsService.loadUserByUsername(token.id)
         return UsernamePasswordAuthenticationToken(
             userDetails,
             null,

@@ -53,9 +53,10 @@ class UserService(
         val tokenSet: TokenSet =
             jwtUtils.generateTokenSet(user.email, mapOf("role" to user.role.toString()))
         user.refreshToken = tokenSet.getValue("refreshToken")
+        userRepository.updateRefreshToken(user.refreshToken, user.id)
 
-        val result: User =
-            userRepository.updateUserRefreshToken(user) ?: throw CustomException(ErrorCode.DB_UPDATE_ERROR)
+        val result: User = userRepository.findByEmail(user.email)
+            ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
         
         return LoginResponse(
             email = result.email,

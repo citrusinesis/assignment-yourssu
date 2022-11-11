@@ -36,9 +36,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-devtools:2.7.5")
     implementation("org.springframework.security:spring-security-web:5.7.5")
     implementation("org.springframework.security:spring-security-config:5.7.5")
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("com.auth0:java-jwt:4.2.1")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
