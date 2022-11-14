@@ -16,6 +16,5 @@ interface UserRepository : JpaRepository<User, Long> {
     @Transactional
     @Modifying
     @Query("update User u set u.refreshToken = :refreshToken where u.id = :id")
-    fun updateRefreshToken(@Param("refreshToken") refreshToken: String, @Param("id") id: Long?): Int
-
+    fun updateRefreshToken(@Param("refreshToken") refreshToken: String, @Param("id") id: Long?): Int?
 }
