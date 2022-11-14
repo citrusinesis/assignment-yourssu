@@ -8,7 +8,6 @@ import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
 import com.citrus.assignment.security.JwtUtils
 import com.citrus.assignment.security.TokenSet
-import com.citrus.assignment.transfer.DeleteRequest
 import com.citrus.assignment.transfer.auth.AuthInfo
 import com.citrus.assignment.transfer.auth.TokenResponse
 import com.citrus.assignment.transfer.user.LoginRequest
@@ -69,8 +68,8 @@ class UserService(
         )
     }
 
-    fun delete(userInfo: DeleteRequest): HttpStatus {
-        val user: User = validateUser(userInfo)
+    fun delete(authInfo: AuthInfo): HttpStatus {
+        val user: User = validateUserWithEmail(authInfo.email)
 
         commentRepository.deleteAll(commentRepository.findAllByUser(user))
         articleRepository.deleteAll(articleRepository.findAllByUser(user))

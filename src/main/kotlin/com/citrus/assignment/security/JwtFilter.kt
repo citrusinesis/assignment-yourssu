@@ -23,5 +23,5 @@ class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
     }
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean =
-        Regex("^/(user)").containsMatchIn(request.requestURI)
+        Regex("^/(user)(?!(/delete))").containsMatchIn(request.requestURI)
 }

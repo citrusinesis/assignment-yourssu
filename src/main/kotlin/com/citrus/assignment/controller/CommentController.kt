@@ -1,7 +1,8 @@
 package com.citrus.assignment.controller
 
+import com.citrus.assignment.security.Auth
 import com.citrus.assignment.service.CommentService
-import com.citrus.assignment.transfer.DeleteRequest
+import com.citrus.assignment.transfer.auth.AuthInfo
 import com.citrus.assignment.transfer.comment.CommentRequest
 import com.citrus.assignment.transfer.comment.CommentResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,21 +16,23 @@ class CommentController(
 ) {
     @PostMapping("/create/{article_id}")
     fun create(
+        @Auth authInfo: AuthInfo,
         @PathVariable(name = "article_id") articleId: String,
         @RequestBody comment: CommentRequest
-    ): CommentResponse = commentService.create(articleId.toLong(), comment)
+    ): CommentResponse = commentService.create(authInfo, articleId.toLong(), comment)
 
     @PostMapping("/modify/{article_id}/{id}")
     fun modify(
+        @Auth authInfo: AuthInfo,
         @PathVariable(name = "article_id") articleId: String,
         @PathVariable(name = "id") id: String,
         @RequestBody comment: CommentRequest
-    ): CommentResponse = commentService.modify(articleId.toLong(), id.toLong(), comment)
+    ): CommentResponse = commentService.modify(authInfo, articleId.toLong(), id.toLong(), comment)
 
     @PostMapping("/delete/{article_id}/{id}")
     fun delete(
+        @Auth authInfo: AuthInfo,
         @PathVariable(name = "article_id") articleId: String,
         @PathVariable(name = "id") id: String,
-        @RequestBody userInfo: DeleteRequest
-    ): HttpStatus = commentService.delete(articleId.toLong(), id.toLong(), userInfo)
+    ): HttpStatus = commentService.delete(authInfo, articleId.toLong(), id.toLong())
 }

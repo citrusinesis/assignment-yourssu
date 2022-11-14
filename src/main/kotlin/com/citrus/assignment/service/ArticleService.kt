@@ -5,9 +5,9 @@ import com.citrus.assignment.domain.User
 import com.citrus.assignment.repository.ArticleRepository
 import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
-import com.citrus.assignment.transfer.DeleteRequest
 import com.citrus.assignment.transfer.article.ArticleRequest
 import com.citrus.assignment.transfer.article.ArticleResponse
+import com.citrus.assignment.transfer.auth.AuthInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,8 +20,8 @@ class ArticleService(
     @Autowired var commentRepository: CommentRepository,
     @Autowired var passwordEncoder: PasswordEncoder
 ) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
-    fun create(articleRequest: ArticleRequest): ArticleResponse {
-        val user: User = validateUser(articleRequest)
+    fun create(authInfo: AuthInfo, articleRequest: ArticleRequest): ArticleResponse {
+        val user: User = validateUserWithEmail(authInfo.email)
         validateNullish(articleRequest.title, articleRequest.content)
 
         val result: Article = articleRepository.save(
@@ -40,8 +40,8 @@ class ArticleService(
         )
     }
 
-    fun modify(articleId: Long, articleRequest: ArticleRequest): ArticleResponse {
-        val user: User = validateUser(articleRequest)
+    fun modify(authInfo: AuthInfo, articleId: Long, articleRequest: ArticleRequest): ArticleResponse {
+        val user: User = validateUserWithEmail(authInfo.email)
         val article: Article = validateArticle(articleId)
         validateNullish(articleRequest.title, articleRequest.content)
         validateAuthor(user, article.user)
@@ -63,8 +63,8 @@ class ArticleService(
         )
     }
 
-    fun delete(articleId: Long, userInfo: DeleteRequest): HttpStatus {
-        val user: User = validateUser(userInfo)
+    fun delete(authInfo: AuthInfo, articleId: Long): HttpStatus {
+        val user: User = validateUserWithEmail(authInfo.email)
         val article: Article = validateArticle(articleId)
         validateAuthor(user, article.user)
 
