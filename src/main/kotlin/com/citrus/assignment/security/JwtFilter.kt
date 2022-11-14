@@ -16,7 +16,7 @@ class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val token: String = request.getHeader("Authorization")?.substring("Bearer ".length)
+        val token: String = request.getHeader("Authorization")
             ?: throw CustomException(ErrorCode.INVALID_TOKEN)
 
         SecurityContextHolder.getContext().authentication = jwtUtils.getAuthentication(token)
