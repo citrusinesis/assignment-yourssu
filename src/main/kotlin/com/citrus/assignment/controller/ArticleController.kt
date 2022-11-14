@@ -23,7 +23,7 @@ class ArticleController(
         @PathVariable(name = "id") id: String,
         @RequestBody article: ArticleRequest,
     ): ArticleResponse = articleService.modify(id.toLong(), article)
-    
+
     @PostMapping("/delete/{id}")
     fun delete(
         @PathVariable(name = "id") id: String,

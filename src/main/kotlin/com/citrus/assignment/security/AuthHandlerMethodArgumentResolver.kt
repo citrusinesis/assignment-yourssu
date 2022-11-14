@@ -14,7 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 @Component
 class AuthHandlerMethodArgumentResolver(
     @Autowired val jwtUtils: JwtUtils,
-): HandlerMethodArgumentResolver {
+) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean =
         parameter.parameterType.isAssignableFrom(AuthInfo::class.java)
 

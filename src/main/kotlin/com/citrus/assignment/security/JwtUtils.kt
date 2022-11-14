@@ -38,9 +38,9 @@ class JwtUtils(
     )
 
     private fun verification(token: String): DecodedJWT = JWT.require(Algorithm.HMAC256(secret))
-            .acceptExpiresAt(expirationTime)
-            .build()
-            .verify(token.substring("Bearer ".length))
+        .acceptExpiresAt(expirationTime)
+        .build()
+        .verify(token.substring("Bearer ".length))
 
 
     fun getAuthentication(tokenString: String): Authentication {

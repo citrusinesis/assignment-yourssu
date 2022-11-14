@@ -7,5 +7,5 @@ data class UserRequest(
     override var email: String,
     override var password: String,
     var username: String,
-    var role: Role,    
+    var role: Role,
 ) : Request(email, password)

@@ -1,7 +1,6 @@
 package com.citrus.assignment.security
 
 
-
 import com.citrus.assignment.exception.CustomException
 import com.citrus.assignment.exception.ErrorCode
 import org.springframework.security.core.context.SecurityContextHolder
