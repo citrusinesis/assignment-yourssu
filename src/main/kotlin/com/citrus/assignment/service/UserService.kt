@@ -9,6 +9,8 @@ import com.citrus.assignment.repository.UserRepository
 import com.citrus.assignment.security.JwtUtils
 import com.citrus.assignment.security.TokenSet
 import com.citrus.assignment.transfer.DeleteRequest
+import com.citrus.assignment.transfer.auth.AuthInfo
+import com.citrus.assignment.transfer.auth.TokenResponse
 import com.citrus.assignment.transfer.user.LoginRequest
 import com.citrus.assignment.transfer.user.LoginResponse
 import com.citrus.assignment.transfer.user.UserRequest
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletRequest
 
 @Service
 class UserService(
@@ -53,11 +56,10 @@ class UserService(
         val tokenSet: TokenSet =
             jwtUtils.generateTokenSet(user.email, mapOf("role" to user.role.toString()))
         user.refreshToken = tokenSet.getValue("refreshToken")
-        userRepository.updateRefreshToken(user.refreshToken, user.id)
+        updateRefreshToken(user)
 
-        val result: User = userRepository.findByEmail(user.email)
-            ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
-        
+        val result: User = validateUserWithEmail(user.email)
+
         return LoginResponse(
             email = result.email,
             username = result.username,
@@ -75,5 +77,18 @@ class UserService(
         userRepository.delete(user)
 
         return HttpStatus.OK
+    }
+
+    fun refresh(request: HttpServletRequest, authInfo: AuthInfo): TokenResponse {
+        val user: User = validateUserWithEmail(authInfo.email)
+
+        val token: String = request.getHeader("Authentication")
+            ?: throw CustomException(ErrorCode.GET_HEADER_CONFLICT)
+
+        val tokenSet: TokenSet = jwtUtils.regenerateTokenSet(token)
+        user.refreshToken = tokenSet.getValue("refreshToken")
+        updateRefreshToken(user)
+
+        return TokenResponse(tokenSet)
     }
 }

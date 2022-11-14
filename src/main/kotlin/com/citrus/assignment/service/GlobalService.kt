@@ -42,6 +42,9 @@ class GlobalService(
         return user
     }
 
+    protected fun validateUserWithEmail(email: String): User = user.findByEmail(email)
+        ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
+
     protected fun validateArticle(articleId: Long): Article =
         article.findById(articleId).toNullable()
             ?: throw CustomException(ErrorCode.ARTICLE_NOT_FOUND)
@@ -58,4 +61,8 @@ class GlobalService(
     protected fun validateAuthor(requestUser: User, owner: User) {
         if (requestUser.id != owner.id) throw CustomException(ErrorCode.USER_NOT_MATCH)
     }
+
+    protected fun updateRefreshToken(requestUser: User) =
+        user.updateRefreshToken(requestUser.refreshToken, requestUser.id)
+            ?: throw CustomException(ErrorCode.DB_UPDATE_ERROR)
 }
