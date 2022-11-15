@@ -34,11 +34,7 @@ class CommentService(
             )
         )
 
-        return CommentResponse(
-            commentId = result.id!!,
-            email = result.user.email,
-            content = result.content
-        )
+        return CommentResponse(result)
     }
 
     fun modify(authInfo: AuthInfo, articleId: Long, commentId: Long, commentRequest: CommentRequest): CommentResponse {
@@ -57,11 +53,7 @@ class CommentService(
             )
         )
 
-        return CommentResponse(
-            commentId = result.id!!,
-            email = result.user.email,
-            content = result.content
-        )
+        return CommentResponse(result)
     }
 
     fun delete(authInfo: AuthInfo, articleId: Long, commentId: Long): HttpStatus {

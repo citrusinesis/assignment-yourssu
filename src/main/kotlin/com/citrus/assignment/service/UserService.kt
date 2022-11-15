@@ -32,21 +32,10 @@ class UserService(
         validateEmail(userRequest.email)
         validateDuplication(userRequest)
 
-        val result: User = userRepository.save(
-            User(
-                email = userRequest.email,
-                password = passwordEncoder.encode(userRequest.password),
-                username = userRequest.username,
-                refreshToken = "",
-                role = userRequest.role,
-            )
-        )
+        val result: User =
+            userRepository.save(User(userRequest, passwordEncoder.encode(userRequest.password)))
 
-        return UserResponse(
-            email = result.email,
-            username = result.username,
-            role = result.role
-        )
+        return UserResponse(result)
     }
 
     fun login(loginRequest: LoginRequest): LoginResponse {
@@ -59,13 +48,7 @@ class UserService(
 
         val result: User = validateUserWithEmail(user.email)
 
-        return LoginResponse(
-            email = result.email,
-            username = result.username,
-            role = result.role,
-            accessToken = tokenSet.getValue("accessToken"),
-            refreshToken = result.refreshToken,
-        )
+        return LoginResponse(result, tokenSet.getValue("accessToken"))
     }
 
     fun delete(authInfo: AuthInfo): HttpStatus {

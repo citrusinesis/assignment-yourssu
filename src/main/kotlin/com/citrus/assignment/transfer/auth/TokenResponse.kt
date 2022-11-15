@@ -7,7 +7,7 @@ data class TokenResponse(
     val refreshToken: String,
 ) {
     constructor(tokenSet: TokenSet) : this(
-        tokenSet.getValue("accessToken"),
-        tokenSet.getValue("refreshToken"),
+        accessToken = tokenSet.getValue("accessToken"),
+        refreshToken = tokenSet.getValue("refreshToken"),
     )
 }

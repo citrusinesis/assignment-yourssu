@@ -24,20 +24,9 @@ class ArticleService(
         val user: User = validateUserWithEmail(authInfo.email)
         validateNullish(articleRequest.title, articleRequest.content)
 
-        val result: Article = articleRepository.save(
-            Article(
-                title = articleRequest.title,
-                content = articleRequest.content,
-                user = user,
-            )
-        )
+        val result: Article = articleRepository.save(Article(articleRequest, user))
 
-        return ArticleResponse(
-            articleId = result.id!!,
-            email = result.user.email,
-            title = result.title,
-            content = result.content
-        )
+        return ArticleResponse(result)
     }
 
     fun modify(authInfo: AuthInfo, articleId: Long, articleRequest: ArticleRequest): ArticleResponse {
@@ -46,21 +35,10 @@ class ArticleService(
         validateNullish(articleRequest.title, articleRequest.content)
         validateAuthor(user, article.user)
 
-        val result: Article = articleRepository.save(
-            Article(
-                id = articleId,
-                title = articleRequest.title,
-                content = articleRequest.content,
-                user = user,
-            )
-        )
+        val result: Article =
+            articleRepository.save(Article(articleId, articleRequest, user))
 
-        return ArticleResponse(
-            articleId = result.id!!,
-            email = result.user.email,
-            title = result.title,
-            content = result.content
-        )
+        return ArticleResponse(result)
     }
 
     fun delete(authInfo: AuthInfo, articleId: Long): HttpStatus {

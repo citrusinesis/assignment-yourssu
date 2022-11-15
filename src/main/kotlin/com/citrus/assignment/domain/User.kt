@@ -1,10 +1,10 @@
 package com.citrus.assignment.domain
 
+import com.citrus.assignment.transfer.user.UserRequest
 import javax.persistence.*
 
 @Entity
 @Table(name = "user")
-
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +26,12 @@ class User(
     @Column(length = 255, nullable = false)
     @Enumerated(EnumType.STRING)
     var role: Role,
-) : AuditedEntity()
+) : AuditedEntity() {
+    constructor(userRequest: UserRequest, encodedPassword: String) : this(
+        email = userRequest.email,
+        password = encodedPassword,
+        username = userRequest.username,
+        refreshToken = "",
+        role = userRequest.role,
+    )
+}
