@@ -36,7 +36,8 @@ class GlobalExceptionHandler {
                 status = ex.cause.toString(),
                 message = ex.message ?: "Internal Server Error",
                 requestURI = request.requestURI
-            ), HttpStatus.INTERNAL_SERVER_ERROR
+            ),
+            HttpStatus.INTERNAL_SERVER_ERROR
         )
     }
 }

@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class ArticleService(
-    @Autowired var userRepository: UserRepository,
-    @Autowired var articleRepository: ArticleRepository,
-    @Autowired var commentRepository: CommentRepository,
-    @Autowired var passwordEncoder: PasswordEncoder
+    @Autowired val userRepository: UserRepository,
+    @Autowired val articleRepository: ArticleRepository,
+    @Autowired val commentRepository: CommentRepository,
+    @Autowired val passwordEncoder: PasswordEncoder
 ) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
     fun create(authInfo: AuthInfo, articleRequest: ArticleRequest): ArticleResponse {
         val user: User = validateUserWithEmail(authInfo.email)

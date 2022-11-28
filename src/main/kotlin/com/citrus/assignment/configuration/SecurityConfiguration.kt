@@ -1,5 +1,7 @@
-package com.citrus.assignment.security
+package com.citrus.assignment.configuration
 
+import com.citrus.assignment.security.JwtFilter
+import com.citrus.assignment.security.JwtUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,6 +29,7 @@ class SecurityConfiguration(
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(jwtUtils))
             httpBasic { disable() }
             headers { frameOptions { disable() } }
+            authorizeHttpRequests { authorize("/*", permitAll) }
         }
         return http.build()
     }

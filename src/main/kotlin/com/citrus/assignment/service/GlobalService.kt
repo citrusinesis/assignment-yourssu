@@ -16,10 +16,10 @@ import java.util.*
 
 @Service
 class GlobalService(
-    var user: UserRepository,
-    var article: ArticleRepository,
-    var comment: CommentRepository,
-    var encoder: PasswordEncoder
+    val user: UserRepository,
+    val article: ArticleRepository,
+    val comment: CommentRepository,
+    val encoder: PasswordEncoder
 ) {
     private val nullish = setOf("", " ", null)
 

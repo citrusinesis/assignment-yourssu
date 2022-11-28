@@ -42,7 +42,6 @@ class JwtUtils(
         .build()
         .verify(token.substring("Bearer ".length))
 
-
     fun getAuthentication(tokenString: String): Authentication {
         val token: DecodedJWT = verification(tokenString)
         if (token.claims == null) throw CustomException(ErrorCode.INVALID_TOKEN)

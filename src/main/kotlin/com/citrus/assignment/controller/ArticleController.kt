@@ -1,6 +1,5 @@
 package com.citrus.assignment.controller
 
-
 import com.citrus.assignment.security.Auth
 import com.citrus.assignment.service.ArticleService
 import com.citrus.assignment.transfer.article.ArticleRequest

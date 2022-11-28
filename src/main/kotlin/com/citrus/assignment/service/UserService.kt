@@ -22,11 +22,11 @@ import javax.servlet.http.HttpServletRequest
 
 @Service
 class UserService(
-    @Autowired var userRepository: UserRepository,
-    @Autowired var articleRepository: ArticleRepository,
-    @Autowired var commentRepository: CommentRepository,
-    @Autowired var passwordEncoder: PasswordEncoder,
-    @Autowired var jwtUtils: JwtUtils,
+    @Autowired val userRepository: UserRepository,
+    @Autowired val articleRepository: ArticleRepository,
+    @Autowired val commentRepository: CommentRepository,
+    @Autowired val passwordEncoder: PasswordEncoder,
+    @Autowired val jwtUtils: JwtUtils,
 ) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
     fun create(userRequest: UserRequest): UserResponse {
         validateEmail(userRequest.email)
