@@ -12,7 +12,7 @@ import com.citrus.assignment.transfer.Request
 import com.citrus.assignment.transfer.user.UserRequest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.Optional
 
 @Service
 class GlobalService(
