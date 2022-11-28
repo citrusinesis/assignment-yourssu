@@ -17,4 +17,5 @@ enum class ErrorCode(
     DUPLICATED_EMAIL_ADDRESS(HttpStatus.CONFLICT, "이미 가입된 이메일 주소입니다."),
     DUPLICATED_USERNAME(HttpStatus.CONFLICT, "이미 존재하는 별명입니다."),
     DB_UPDATE_ERROR(HttpStatus.CONFLICT, "DB에 업로드 하는 중 문제가 발생하였습니다."),
+    GET_HEADER_CONFLICT(HttpStatus.CONFLICT, "요청의 헤더를 추출하는 중 문제가 발생하였습니다."),
 }

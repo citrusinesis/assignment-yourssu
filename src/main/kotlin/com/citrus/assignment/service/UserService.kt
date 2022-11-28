@@ -8,7 +8,8 @@ import com.citrus.assignment.repository.CommentRepository
 import com.citrus.assignment.repository.UserRepository
 import com.citrus.assignment.security.JwtUtils
 import com.citrus.assignment.security.TokenSet
-import com.citrus.assignment.transfer.DeleteRequest
+import com.citrus.assignment.transfer.auth.AuthInfo
+import com.citrus.assignment.transfer.auth.TokenResponse
 import com.citrus.assignment.transfer.user.LoginRequest
 import com.citrus.assignment.transfer.user.LoginResponse
 import com.citrus.assignment.transfer.user.UserRequest
@@ -17,34 +18,24 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletRequest
 
 @Service
 class UserService(
-    @Autowired var userRepository: UserRepository,
-    @Autowired var articleRepository: ArticleRepository,
-    @Autowired var commentRepository: CommentRepository,
-    @Autowired var passwordEncoder: PasswordEncoder,
-    @Autowired var jwtUtils: JwtUtils,
+    @Autowired val userRepository: UserRepository,
+    @Autowired val articleRepository: ArticleRepository,
+    @Autowired val commentRepository: CommentRepository,
+    @Autowired val passwordEncoder: PasswordEncoder,
+    @Autowired val jwtUtils: JwtUtils,
 ) : GlobalService(userRepository, articleRepository, commentRepository, passwordEncoder) {
     fun create(userRequest: UserRequest): UserResponse {
         validateEmail(userRequest.email)
         validateDuplication(userRequest)
 
-        val result: User = userRepository.save(
-            User(
-                email = userRequest.email,
-                password = passwordEncoder.encode(userRequest.password),
-                username = userRequest.username,
-                refreshToken = "",
-                role = userRequest.role,
-            )
-        )
+        val result: User =
+            userRepository.save(User(userRequest, passwordEncoder.encode(userRequest.password)))
 
-        return UserResponse(
-            email = result.email,
-            username = result.username,
-            role = result.role
-        )
+        return UserResponse(result)
     }
 
     fun login(loginRequest: LoginRequest): LoginResponse {
@@ -53,27 +44,33 @@ class UserService(
         val tokenSet: TokenSet =
             jwtUtils.generateTokenSet(user.email, mapOf("role" to user.role.toString()))
         user.refreshToken = tokenSet.getValue("refreshToken")
-        userRepository.updateRefreshToken(user.refreshToken, user.id)
+        updateRefreshToken(user)
 
-        val result: User = userRepository.findByEmail(user.email)
-            ?: throw CustomException(ErrorCode.USER_NOT_FOUND)
-        
-        return LoginResponse(
-            email = result.email,
-            username = result.username,
-            role = result.role,
-            accessToken = tokenSet.getValue("accessToken"),
-            refreshToken = result.refreshToken,
-        )
+        val result: User = validateUserWithEmail(user.email)
+
+        return LoginResponse(result, tokenSet.getValue("accessToken"))
     }
 
-    fun delete(userInfo: DeleteRequest): HttpStatus {
-        val user: User = validateUser(userInfo)
+    fun delete(authInfo: AuthInfo): HttpStatus {
+        val user: User = validateUserWithEmail(authInfo.email)
 
         commentRepository.deleteAll(commentRepository.findAllByUser(user))
         articleRepository.deleteAll(articleRepository.findAllByUser(user))
         userRepository.delete(user)
 
         return HttpStatus.OK
+    }
+
+    fun refresh(request: HttpServletRequest, authInfo: AuthInfo): TokenResponse {
+        val user: User = validateUserWithEmail(authInfo.email)
+
+        val token: String = request.getHeader("Authentication")
+            ?: throw CustomException(ErrorCode.GET_HEADER_CONFLICT)
+
+        val tokenSet: TokenSet = jwtUtils.regenerateTokenSet(token)
+        user.refreshToken = tokenSet.getValue("refreshToken")
+        updateRefreshToken(user)
+
+        return TokenResponse(tokenSet)
     }
 }

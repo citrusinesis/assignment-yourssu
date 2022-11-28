@@ -1,5 +1,6 @@
 package com.citrus.assignment.domain
 
+import com.citrus.assignment.transfer.article.ArticleRequest
 import javax.persistence.*
 
 @Entity
@@ -19,4 +20,17 @@ class Article(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
-) : AuditedEntity()
+) : AuditedEntity() {
+    constructor(articleRequest: ArticleRequest, user: User) : this(
+        title = articleRequest.title,
+        content = articleRequest.content,
+        user = user,
+    )
+
+    constructor(articleId: Long, articleRequest: ArticleRequest, user: User) : this(
+        id = articleId,
+        title = articleRequest.title,
+        content = articleRequest.content,
+        user = user,
+    )
+}

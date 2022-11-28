@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "2.7.4"
-    id ("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
-    id ("org.jetbrains.kotlin.plugin.noarg") version "1.5.21"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.5.21"
     id("io.spring.dependency-management") version "1.0.14.RELEASE"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
@@ -36,6 +36,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-devtools:2.7.5")
     implementation("org.springframework.security:spring-security-web:5.7.5")
     implementation("org.springframework.security:spring-security-config:5.7.5")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
+    implementation("org.springdoc:springdoc-openapi-security:1.6.13")
     implementation("com.auth0:java-jwt:4.2.1")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

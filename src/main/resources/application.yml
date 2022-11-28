@@ -8,11 +8,20 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: true
     database: mysql
   main:
     allow-bean-definition-overriding: true
+springdoc:
+  version: 1.0.0
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: swagger-ui.html
+
 
 server:
   port: 8080

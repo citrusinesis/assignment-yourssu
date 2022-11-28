@@ -19,5 +19,4 @@ class UserDetailsImpl(val user: User) : UserDetails {
     override fun isCredentialsNonExpired(): Boolean = true
 
     override fun isEnabled(): Boolean = true
-
 }
