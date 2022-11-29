@@ -5,8 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.format.Formatter
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
-
+import java.util.Locale
 
 @Configuration
 class DateTimeConfig {
