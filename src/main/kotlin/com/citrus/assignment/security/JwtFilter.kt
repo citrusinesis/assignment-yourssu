@@ -12,9 +12,9 @@ class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
     private val whiteList: List<String> = listOf(
         "/user/create",
         "/user/login",
-        "/api-docs",
+        "^(/api-docs)",
+        "^(/swagger-ui)",
         "/swagger-ui.html",
-        "/swagger-ui/index.html",
     )
 
     override fun doFilterInternal(
@@ -25,11 +25,16 @@ class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
         val token: String = request.getHeader("Authorization")
             ?: throw CustomException(ErrorCode.INVALID_TOKEN)
 
+        if (Regex("^(/show)").containsMatchIn(request.requestURI)) {
+            if (jwtUtils.getRole(token) != "ADMIN")
+                throw CustomException(ErrorCode.NOT_ADMIN)
+        }
+
         SecurityContextHolder.getContext().authentication = jwtUtils.getAuthentication(token)
         filterChain.doFilter(request, response)
     }
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.requestURI in whiteList ||
-        Regex("^(/swagger-ui)").containsMatchIn(request.requestURI) ||
-        Regex("^(/api-docs)").containsMatchIn(request.requestURI)
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean = whiteList.map {
+        Regex(it).containsMatchIn(request.requestURI)
+    }.contains(true)
 }

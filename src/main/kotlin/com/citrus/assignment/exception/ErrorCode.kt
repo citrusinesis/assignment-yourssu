@@ -11,6 +11,7 @@ enum class ErrorCode(
     USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "접근한 정보의 소유자가 아닙니다."),
     EMAIL_WRONG_FORMAT(HttpStatus.UNAUTHORIZED, "잘못된 이메일 형식입니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "JWT 토큰이 유효하지 않습니다."),
+    NOT_ADMIN(HttpStatus.UNAUTHORIZED, "이 요청은 관리자만 보낼 수 있습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글 정보를 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글 정보를 찾을 수 없습니다."),
