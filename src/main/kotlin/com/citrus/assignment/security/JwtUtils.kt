@@ -56,8 +56,9 @@ class JwtUtils(
 
     fun getIdentifier(token: String): String = verification(token).id
 
-    fun getRole(token: String): String = verification(token).getClaim("role")
-        .let { throw CustomException(ErrorCode.INVALID_TOKEN) }
+    fun getRole(token: String): String = verification(token)
+        .getClaim("role")
+        .toString().replace("\"", "")
 
     fun regenerateTokenSet(tokenString: String): TokenSet {
         val token: DecodedJWT = verification(tokenString)

@@ -1,6 +1,7 @@
 package com.citrus.assignment.repository
 
 import com.citrus.assignment.domain.QUser
+import com.citrus.assignment.domain.Role
 import com.citrus.assignment.domain.User
 import com.citrus.assignment.transfer.admin.ShowRequest
 import com.querydsl.core.types.dsl.BooleanExpression
@@ -19,6 +20,7 @@ class UserRepositoryImpl(
         jpaQueryFactory
             .selectFrom(user)
             .where(
+                user.role.eq(Role.USER),
                 usernameEq(username),
                 emailEq(email),
                 createdAtEq(createdAtStart, createdAtEnd),
