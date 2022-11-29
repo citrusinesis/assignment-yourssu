@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-interface UserRepository : JpaRepository<User, Long> {
+interface UserRepository : JpaRepository<User, Long>, UserRepositoryCustom {
     fun findByEmail(email: String): User?
     fun findByUsername(username: String): User?
 

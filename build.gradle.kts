@@ -18,6 +18,7 @@ plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
+    kotlin("kapt") version "1.7.21"
 }
 
 noArg {
@@ -50,6 +51,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
     implementation("org.springdoc:springdoc-openapi-security:1.6.13")
     implementation("com.auth0:java-jwt:4.2.1")
+    implementation("com.querydsl:querydsl-jpa:5.0.0")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

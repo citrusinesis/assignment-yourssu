@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
-import java.util.Date
+import java.util.*
 
 @Component
 class JwtUtils(
@@ -55,6 +55,9 @@ class JwtUtils(
     }
 
     fun getIdentifier(token: String): String = verification(token).id
+
+    fun getRole(token: String): String = verification(token).getClaim("role")
+        .let { throw CustomException(ErrorCode.INVALID_TOKEN) }
 
     fun regenerateTokenSet(tokenString: String): TokenSet {
         val token: DecodedJWT = verification(tokenString)
